@@ -11,7 +11,7 @@ class CreatePointOfSalesTable extends Migration
         Schema::create('point_of_sales', function (Blueprint $table) {
             $table->id();
             $table->string('number', 3);
-            $table->string('ip_address', 15);
+            $table->string('ip_address', 15)->unique();
 
             $table->bigInteger('site_id')->unsigned();
             $table->foreign('site_id')->references('id')->on('sites');

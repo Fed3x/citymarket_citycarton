@@ -20,6 +20,22 @@ class CartonController extends Controller
     }
     public function store(Request $request)
     {
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if(isset($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = 'UNKNOWN';
+
        
         $v = Validator::make($request->all(), [
             'barcode' => 'required|regex:/^[0-9]{6,8}$/|unique:cartons',
@@ -37,7 +53,7 @@ class CartonController extends Controller
             $carton->carton_type_id = $request->carton_type_id;
             $carton->user_id = auth()->id();
             $carton->site_id = auth()->user()->site_id;
-            $carton->created_at = Carbon::now();
+            $carton->created_ip_at = $ipaddress;
             $carton->save();
             $carton->load('carton_type');
     
@@ -48,6 +64,21 @@ class CartonController extends Controller
 
     public function update(Request $request, $id)
     {
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if(isset($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = 'UNKNOWN';
         $v = Validator::make($request->all(), [
             'barcode' => 'required|unique:cartons|regex:/^[0-9]{6,8}$/',
         ], [
@@ -60,7 +91,7 @@ class CartonController extends Controller
         }else{
             $carton = Carton::find($id);
             $carton->barcode = $request->barcode;
-            $carton->updated_at = Carbon::now();
+            $carton->updated_ip_at = $ipaddress;
             $carton->save();
             $carton->load('carton_type');
     

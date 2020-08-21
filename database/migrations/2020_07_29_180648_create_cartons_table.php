@@ -19,14 +19,16 @@ class CreateCartonsTable extends Migration
             $table->bigInteger('carton_type_id');
             $table->foreign('carton_type_id')->references('id')->on('carton_types');
 
-            $table->bigInteger('point_of_sale_id')->nullable();
-            $table->foreign('point_of_sale_id')->references('id')->on('point_of_sales');
+
 
             $table->bigInteger('site_id');
             $table->foreign('site_id')->references('id')->on('sites');
 
             $table->unique(["barcode", "carton_type_id"], 'barcode_carton_type_id');
 
+            $table->string('created_ip_at',15);
+            $table->string('updated_ip_at',15)->nullable();
+            
             $table->timestamps();
         });
     }
