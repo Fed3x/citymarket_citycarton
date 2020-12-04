@@ -80,7 +80,7 @@ class CartonController extends Controller
         else
             $ipaddress = 'UNKNOWN';
         $v = Validator::make($request->all(), [
-            'barcode' => 'required|unique:cartons|regex:/^[0-9]{6,8}$/',
+            'barcode' => 'required|regex:/^[0-9]{6,8}$/|unique:cartons,barcode,'. $id,
         ], [
             'barcode.unique' => 'El codigo de cartón ingresado ya existe',
             'barcode.regex' => 'El codigo de cartón tiene un patron incorrecto'
